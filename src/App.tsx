@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
+import { ReactComponent as Logo } from "./check.svg";
 import TextLoop from "react-text-loop";
 import cxs from "cxs/component";
 import "./App.css";
 const Example = cxs("div")({
-  fontSize: "24px",
+  fontSize: "34px",
   marginBottom: "5px",
   fontWeight: 600,
   textTransform: "capitalize",
-  color: "#000",
+  color: "#00",
+  display: "block",
+  cursor: "pointer",
 });
 
 const StyledTextLoop = cxs(TextLoop)({
@@ -101,148 +104,78 @@ const Section = cxs("div")({
     'Arial, nyt-franklin, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif',
 });
 
-const Base = () => (
-  <Section>
-    <Title>Default</Title>
-    <Example>
-      <TextLoop>
-        {nouns &&
-          nouns.map((term, index) => {
-            return (
-              <span>
-                {adjectives[getRandomIndex()]} {nouns[getRandomIndex()]}{" "}
-                {collectiveNouns[getRandomIndex()]}{" "}
-                {sentenceEnds[getRandomIndex()]}
-              </span>
-            );
-          })}
-      </TextLoop>{" "}
-    </Example>
-  </Section>
-);
-
-const Fast = () => (
-  <div
-    onClick={() => {
-      console.log("hi");
-    }}
-  >
-    <Section>
-      <Title>Fast transition</Title>
-      <Example>
-        <TextLoop interval={2000}>
-          {adjectives &&
-            adjectives.map((term, index) => {
-              return <span>{adjectives[getRandomIndex()]}</span>;
-            })}
-        </TextLoop>{" "}
-        <TextLoop interval={1000}>
-          {nouns &&
-            nouns.map((term, index) => {
-              return <span>{nouns[getRandomIndex()]}</span>;
-            })}
-        </TextLoop>{" "}
-        <TextLoop interval={900}>
-          {collectiveNouns &&
-            collectiveNouns.map((term, index) => {
-              return <span>{collectiveNouns[getRandomIndex()]}</span>;
-            })}
-        </TextLoop>{" "}
-        <TextLoop interval={1200}>
-          {sentenceEnds &&
-            sentenceEnds.map((term, index) => {
-              return <span>{sentenceEnds[getRandomIndex()]}</span>;
-            })}
-        </TextLoop>{" "}
-      </Example>
-    </Section>
-  </div>
-);
-
-const Smooth = () => (
-  <Section>
-    <Title>Smooth animation (different spring config)</Title>
-    <Example>
-      <TextLoop
-        springConfig={{ stiffness: 70, damping: 31 }}
-        adjustingSpeed={500}
-      >
-        {nouns &&
-          nouns.map((term, index) => {
-            return (
-              <span>
-                {adjectives[index]} {term} {collectiveNouns[index]}{" "}
-              </span>
-            );
-          })}
-      </TextLoop>{" "}
-      in every category.
-    </Example>
-  </Section>
-);
-
-const Variable = () => (
-  <Section>
-    <Title>Variable interval</Title>
-    <Example>
-      <TextLoop interval={[3000, 1000]}>
-        {nouns &&
-          nouns.map((term, index) => {
-            return (
-              <span>
-                {adjectives[index]} {term} {collectiveNouns[index]}{" "}
-              </span>
-            );
-          })}
-      </TextLoop>{" "}
-      in every category.
-    </Example>
-  </Section>
-);
-
-const Masked = () => (
-  <Section
-    onClick={() => {
-      console.log("hi");
-    }}
-  >
-    <Title>Masked</Title>
-    <Example>
-      <TextLoop mask={true}>
-        {nouns &&
-          nouns.map((term, index) => {
-            return (
-              <span>
-                {adjectives[index]} {term} {collectiveNouns[index]}{" "}
-              </span>
-            );
-          })}
-      </TextLoop>{" "}
-      in every category.
-    </Example>
-  </Section>
-);
+// const Fast = () => (
+//   <div
+//     onClick={() => {
+//       console.log("hi");
+//     }}
+//   >
+//     <Section>
+//       <Title>Fast transition</Title>
+//       <Example>
+//         <TextLoop interval={2000}>
+//           {adjectives &&
+//             adjectives.map((term, index) => {
+//               return <span>{adjectives[getRandomIndex()]}</span>;
+//             })}
+//         </TextLoop>{" "}
+//         <TextLoop interval={1000}>
+//           {nouns &&
+//             nouns.map((term, index) => {
+//               return <span>{nouns[getRandomIndex()]}</span>;
+//             })}
+//         </TextLoop>{" "}
+//         <TextLoop interval={900}>
+//           {collectiveNouns &&
+//             collectiveNouns.map((term, index) => {
+//               return <span>{collectiveNouns[getRandomIndex()]}</span>;
+//             })}
+//         </TextLoop>{" "}
+//         <TextLoop interval={1200}>
+//           {sentenceEnds &&
+//             sentenceEnds.map((term, index) => {
+//               return <span>{sentenceEnds[getRandomIndex()]}</span>;
+//             })}
+//         </TextLoop>{" "}
+//       </Example>
+//     </Section>
+//   </div>
+// );
 
 const Controlled = () => {
-  const [options, setOptions] = useState(nouns);
+  const getRandomIndex = () => Math.floor(Math.random() * 15);
+  const [options, setOptions] = useState([
+    `${adjectives[getRandomIndex()]} ${nouns[getRandomIndex()]} ${
+      collectiveNouns[getRandomIndex()]
+    } ${sentenceEnds[getRandomIndex()]}`,
+    `${adjectives[getRandomIndex()]} ${nouns[getRandomIndex()]} ${
+      collectiveNouns[getRandomIndex()]
+    } ${sentenceEnds[getRandomIndex()]}`,
+    `${adjectives[getRandomIndex()]} ${nouns[getRandomIndex()]} ${
+      collectiveNouns[getRandomIndex()]
+    } ${sentenceEnds[getRandomIndex()]}`,
+  ]);
+  const [isLoaded, setIsLoaded] = useState(false);
   const [interval, setInterval] = useState(0);
-
-  useEffect(() => {
-    const optionsTimeout = setTimeout(() => {
-      setOptions(nouns);
-      console.log("change options");
-    }, 10000);
-
-    return () => {
-      clearTimeout(optionsTimeout);
-    };
-  }, []);
+  const [isDone, setIsDone] = useState(false);
+  const [isExpired, setIsExpired] = useState(false);
 
   useEffect(() => {
     const intervalStartTimeout = setTimeout(() => {
-      console.log("start");
-      setInterval(1000);
-    }, 5000);
+      setIsLoaded(true);
+      setInterval(1200);
+      setOptions([
+        `${adjectives[getRandomIndex()]} ${nouns[getRandomIndex()]} ${
+          collectiveNouns[getRandomIndex()]
+        } ${sentenceEnds[getRandomIndex()]}`,
+        `${adjectives[getRandomIndex()]} ${nouns[getRandomIndex()]} ${
+          collectiveNouns[getRandomIndex()]
+        } ${sentenceEnds[getRandomIndex()]}`,
+        `${adjectives[getRandomIndex()]} ${nouns[getRandomIndex()]} ${
+          collectiveNouns[getRandomIndex()]
+        } ${sentenceEnds[getRandomIndex()]}`,
+      ]);
+    }, 0);
     return () => {
       clearTimeout(intervalStartTimeout);
     };
@@ -251,7 +184,7 @@ const Controlled = () => {
   useEffect(() => {
     const intervalStopTimeout = setTimeout(() => {
       setInterval(0);
-      console.log("stop");
+      setIsExpired(true);
     }, 15000);
 
     return () => {
@@ -261,63 +194,68 @@ const Controlled = () => {
 
   return (
     <Section
-      onClick={() => {
+      onClick={(event) => {
+        event.preventDefault();
+        setIsDone(true);
+        setIsExpired(false);
         setInterval(0);
       }}
     >
       <Title>Controlled props (start/stop animation and change options)</Title>
-      <Example>
-        <TextLoop
-          interval={interval}
-          springConfig={{ stiffness: 70, damping: 31 }}
-          adjustingSpeed={500}
-          children={options}
-        />{" "}
-        in every category.
-      </Example>
+      {isLoaded && (
+        <Example>
+          <TextLoop interval={interval} fade delay={1000} children={options} />
+          {/* <TextLoop
+            interval={interval}
+            delay={!isDone ? 1000 : 0}
+            children={adjectives}
+          />{" "}
+          <TextLoop
+            interval={interval}
+            delay={!isDone ? 1200 : 0}
+            children={nouns}
+          />{" "}
+          <TextLoop
+            interval={interval}
+            fade
+            delay={!isDone ? 1900 : 0}
+            children={collectiveNouns}
+          />{" "}
+          <TextLoop interval={interval} children={sentenceEnds} />{" "} */}
+        </Example>
+      )}
+      <div>
+        {Boolean(isDone) && (
+          <>
+            <h3>
+              <Logo /> Headline chosen!
+            </h3>
+          </>
+        )}
+      </div>
+      <div>
+        {Boolean(isExpired) && (
+          <h3>
+            <Logo /> Boss chose this headline!
+          </h3>
+        )}
+      </div>
     </Section>
   );
 };
 
-const Staggered = () => (
-  <Section>
-    <Title>Staggered (with delay prop and custom styling)</Title>
-    <Example>
-      <StyledTextLoop mask={true} fade={false}>
-        {nouns &&
-          nouns.map((term, index) => {
-            return (
-              <span>
-                {adjectives[index]} {term} {collectiveNouns[index]}{" "}
-              </span>
-            );
-          })}
-      </StyledTextLoop>
-    </Example>
-  </Section>
-);
-
 enum Sections {
-  Base,
   Fast,
-  Smooth,
-  Variable,
-  Masked,
   Controlled,
-  Staggered,
 }
 
 const App = () => {
-  const [activeSection, setActiveSection] = useState<Sections>(Sections.Base);
+  const [activeSection, setActiveSection] = useState<Sections>(
+    Sections.Controlled
+  );
 
   const mapSectionToComponent = {
-    [Sections.Base]: Base,
-    [Sections.Fast]: Fast,
-    [Sections.Smooth]: Smooth,
-    [Sections.Variable]: Variable,
-    [Sections.Masked]: Masked,
     [Sections.Controlled]: Controlled,
-    [Sections.Staggered]: Staggered,
   };
 
   const ExampleSection = mapSectionToComponent[activeSection];
@@ -330,13 +268,7 @@ const App = () => {
             setActiveSection(parseInt(e.target.value, 10));
           }}
         >
-          <option value={Sections.Base}>Default</option>
-          <option value={Sections.Fast}>Fast</option>
-          <option value={Sections.Smooth}>Smooth</option>
-          <option value={Sections.Variable}>Variable</option>
-          <option value={Sections.Masked}>Masked</option>
           <option value={Sections.Controlled}>Controlled</option>
-          <option value={Sections.Staggered}>Staggered</option>
         </select>
       </Section>
       <ExampleSection />
