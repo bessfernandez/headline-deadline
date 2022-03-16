@@ -7,7 +7,7 @@ const Example = cxs("div")({
   marginBottom: "5px",
   fontWeight: 600,
   textTransform: "capitalize",
-  color: "#aaa",
+  color: "#000",
 });
 
 const StyledTextLoop = cxs(TextLoop)({
@@ -92,7 +92,7 @@ const Title = cxs("div")({
   fontSize: "10px",
   fontWeight: 600,
   textTransform: "uppercase",
-  color: "#aaa",
+  color: "#000",
 });
 
 const Section = cxs("div")({
