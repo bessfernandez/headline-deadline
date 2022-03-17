@@ -3,7 +3,8 @@ import { ReactComponent as Logo } from "./check.svg";
 import TextLoop from "react-text-loop";
 import cxs from "cxs/component";
 import "./App.css";
-const Example = cxs("div")({
+
+const HeadlineGroup = cxs("div")({
   fontSize: "34px",
   marginBottom: "5px",
   fontWeight: 600,
@@ -143,39 +144,19 @@ const Section = cxs("div")({
 // );
 
 const Controlled = () => {
-  const getRandomIndex = () => Math.floor(Math.random() * 15);
-  const [options, setOptions] = useState([
-    `${adjectives[getRandomIndex()]} ${nouns[getRandomIndex()]} ${
-      collectiveNouns[getRandomIndex()]
-    } ${sentenceEnds[getRandomIndex()]}`,
-    `${adjectives[getRandomIndex()]} ${nouns[getRandomIndex()]} ${
-      collectiveNouns[getRandomIndex()]
-    } ${sentenceEnds[getRandomIndex()]}`,
-    `${adjectives[getRandomIndex()]} ${nouns[getRandomIndex()]} ${
-      collectiveNouns[getRandomIndex()]
-    } ${sentenceEnds[getRandomIndex()]}`,
-  ]);
   const [isLoaded, setIsLoaded] = useState(false);
   const [interval, setInterval] = useState(0);
   const [isDone, setIsDone] = useState(false);
   const [isExpired, setIsExpired] = useState(false);
 
+  // currently not getting sentence words randomly, going through by array order
+  const getRandomIndex = () => Math.floor(Math.random() * 15);
+
   useEffect(() => {
     const intervalStartTimeout = setTimeout(() => {
       setIsLoaded(true);
       setInterval(1200);
-      setOptions([
-        `${adjectives[getRandomIndex()]} ${nouns[getRandomIndex()]} ${
-          collectiveNouns[getRandomIndex()]
-        } ${sentenceEnds[getRandomIndex()]}`,
-        `${adjectives[getRandomIndex()]} ${nouns[getRandomIndex()]} ${
-          collectiveNouns[getRandomIndex()]
-        } ${sentenceEnds[getRandomIndex()]}`,
-        `${adjectives[getRandomIndex()]} ${nouns[getRandomIndex()]} ${
-          collectiveNouns[getRandomIndex()]
-        } ${sentenceEnds[getRandomIndex()]}`,
-      ]);
-    }, 0);
+    }, 1000);
     return () => {
       clearTimeout(intervalStartTimeout);
     };
@@ -195,17 +176,16 @@ const Controlled = () => {
   return (
     <Section
       onClick={(event) => {
-        event.preventDefault();
+        /* when user chooses headline stop the clock */
         setIsDone(true);
         setIsExpired(false);
         setInterval(0);
       }}
     >
-      <Title>Controlled props (start/stop animation and change options)</Title>
+      {!isLoaded && <p>OMG here he comes...</p>}
       {isLoaded && (
-        <Example>
-          <TextLoop interval={interval} fade delay={1000} children={options} />
-          {/* <TextLoop
+        <HeadlineGroup>
+          <TextLoop
             interval={interval}
             delay={!isDone ? 1000 : 0}
             children={adjectives}
@@ -221,23 +201,19 @@ const Controlled = () => {
             delay={!isDone ? 1900 : 0}
             children={collectiveNouns}
           />{" "}
-          <TextLoop interval={interval} children={sentenceEnds} />{" "} */}
-        </Example>
+          <TextLoop interval={interval} children={sentenceEnds} />{" "}
+        </HeadlineGroup>
       )}
       <div>
         {Boolean(isDone) && (
           <>
-            <h3>
-              <Logo /> Headline chosen!
-            </h3>
+            <h3>✅ Headline chosen!</h3>
           </>
         )}
       </div>
       <div>
-        {Boolean(isExpired) && (
-          <h3>
-            <Logo /> Boss chose this headline!
-          </h3>
+        {Boolean(isExpired) && Boolean(!isDone) && (
+          <h3>🤷‍♂️ Times up! This is your headline.</h3>
         )}
       </div>
     </Section>
@@ -250,28 +226,15 @@ enum Sections {
 }
 
 const App = () => {
-  const [activeSection, setActiveSection] = useState<Sections>(
-    Sections.Controlled
-  );
-
+  /* could try other sections here */
   const mapSectionToComponent = {
     [Sections.Controlled]: Controlled,
   };
 
-  const ExampleSection = mapSectionToComponent[activeSection];
+  const Headlines = mapSectionToComponent[Sections.Controlled];
   return (
     <div>
-      <Section>
-        <Title>Examples</Title>
-        <select
-          onChange={(e) => {
-            setActiveSection(parseInt(e.target.value, 10));
-          }}
-        >
-          <option value={Sections.Controlled}>Controlled</option>
-        </select>
-      </Section>
-      <ExampleSection />
+      <Headlines />
     </div>
   );
 };
