@@ -8,7 +8,7 @@ const HeadlineGroup = cxs("div")({
   marginBottom: "5px",
   fontWeight: 600,
   textTransform: "capitalize",
-  FontFace: "",
+  wordBreak: "break-all",
   color: "#00",
   display: "block",
   cursor: "pointer",
@@ -100,8 +100,6 @@ const Section = cxs("div")({
 });
 
 const Controlled = () => {
-  const [interation, setIteration] = useState(1);
-
   const [isLoaded, setIsLoaded] = useState(false);
   const [interval, setInterval] = useState(0);
   const [isDone, setIsDone] = useState(false);
@@ -123,7 +121,6 @@ const Controlled = () => {
   useEffect(() => {
     const intervalStopTimeout = setTimeout(() => {
       setInterval(0);
-      setIteration(0);
       setIsExpired(true);
     }, 15000);
 
@@ -152,62 +149,86 @@ const Controlled = () => {
   }, [isDone, isExpired]);
 
   return (
-    <Section
-      onClick={(event) => {
-        /* when user chooses headline stop the clock */
-        setIsDone(true);
-        setIsExpired(false);
-        setInterval(0);
-      }}
-    >
-      {!isLoaded && <h1>🗞</h1>}
-      {isLoaded && (
-        <HeadlineGroup id="headline">
-          <TextLoop
-            interval={interval}
-            delay={!isDone ? 1000 : 0}
-            children={adjectives}
-          />{" "}
-          <TextLoop
-            interval={interval}
-            delay={!isDone ? 1200 : 0}
-            children={nouns}
-          />{" "}
-          <TextLoop
-            interval={interval}
-            fade
-            delay={!isDone ? 1900 : 0}
-            children={collectiveNouns}
-          />{" "}
-          <TextLoop interval={interval} children={sentenceEnds} />{" "}
-        </HeadlineGroup>
-      )}
-      <div>
-        {Boolean(isDone) && (
-          <>
-            <h3>✅ Headline chosen!</h3>
-          </>
+    <>
+      <Section
+        onClick={(event) => {
+          /* when user chooses headline stop the clock */
+          setIsDone(true);
+          setIsExpired(false);
+          setInterval(0);
+        }}
+      >
+        {!isLoaded && <h1>🗞 Headline Deadline</h1>}
+
+        {isLoaded && (
+          <HeadlineGroup id="headline">
+            {Boolean(isDone) && <span>✅</span>}{" "}
+            <TextLoop
+              interval={interval}
+              delay={!isDone ? 1000 : 0}
+              children={adjectives}
+            />{" "}
+            <TextLoop
+              interval={interval}
+              delay={!isDone ? 1200 : 0}
+              children={nouns}
+            />{" "}
+            <TextLoop
+              interval={interval}
+              fade
+              delay={!isDone ? 1900 : 0}
+              children={collectiveNouns}
+            />{" "}
+            <TextLoop interval={interval} children={sentenceEnds} />{" "}
+          </HeadlineGroup>
         )}
         <div>
-          {Boolean(isExpired) && Boolean(!isDone) && (
-            <h3>🤷‍♂️ Times up! This is your headline.</h3>
+          {Boolean(isDone) && (
+            <>
+              <h3>Your Headline chosen!</h3>
+            </>
           )}
+          <div>
+            {Boolean(isExpired) && Boolean(!isDone) && (
+              <h3>🤷‍♂️ Times up! This is your headline.</h3>
+            )}
+          </div>
+          {(isDone || isExpired) && relatedArticles && (
+            <h4>Headlines and Related Articles</h4>
+          )}
+          {(isDone || isExpired) &&
+            relatedArticles &&
+            relatedArticles.map((article) => {
+              return (
+                <p>
+                  <a target="_blank" href={article.web_url}>
+                    {article.headline.main}
+                  </a>
+                </p>
+              );
+            })}
         </div>
-        {(isDone || isExpired) && relatedArticles && <h3>Related Articles</h3>}
-        {(isDone || isExpired) &&
-          relatedArticles &&
-          relatedArticles.map((article) => {
-            return (
-              <p>
-                {" "}
-                <a target="_blank" href={article.web_url}>
-                  {article.headline.main}
-                </a>
-              </p>
-            );
-          })}
-      </div>
-    </Section>
+      </Section>
+      {Boolean(isDone) && (
+        <>
+          <hr /> <h3>Co-Worker Leaderboard</h3>
+          <ol>
+            <li>
+              Muppets take Mordor <span>⬆️ ⬇️</span>
+            </li>
+            <li>
+              Stonks take wild turn <span>⬆️ ⬇️</span>
+            </li>
+            <li>
+              Chicken Soup for the Swole <span>⬆️ ⬇️</span>
+            </li>
+            <li>
+              Daylight Savings Time lost at Sea <span>⬆️ ⬇️</span>
+            </li>
+          </ol>
+        </>
+      )}{" "}
+    </>
   );
 };
 
