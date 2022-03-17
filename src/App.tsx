@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { ReactComponent as Logo } from "./check.svg";
 import TextLoop from "react-text-loop";
 import cxs from "cxs/component";
 import "./App.css";
@@ -9,16 +8,11 @@ const HeadlineGroup = cxs("div")({
   marginBottom: "5px",
   fontWeight: 600,
   textTransform: "capitalize",
+  FontFace: "",
   color: "#00",
   display: "block",
   cursor: "pointer",
 });
-
-const StyledTextLoop = cxs(TextLoop)({
-  display: "block",
-});
-
-const getRandomIndex = () => Math.floor(Math.random() * 15);
 
 const adjectives = [
   "yummy",
@@ -102,53 +96,17 @@ const Title = cxs("div")({
 const Section = cxs("div")({
   marginBottom: "50px",
   fontFamily:
-    'Arial, nyt-franklin, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif',
+    'nyt-cheltenham, nyt-franklin, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif',
 });
 
-// const Fast = () => (
-//   <div
-//     onClick={() => {
-//       console.log("hi");
-//     }}
-//   >
-//     <Section>
-//       <Title>Fast transition</Title>
-//       <Example>
-//         <TextLoop interval={2000}>
-//           {adjectives &&
-//             adjectives.map((term, index) => {
-//               return <span>{adjectives[getRandomIndex()]}</span>;
-//             })}
-//         </TextLoop>{" "}
-//         <TextLoop interval={1000}>
-//           {nouns &&
-//             nouns.map((term, index) => {
-//               return <span>{nouns[getRandomIndex()]}</span>;
-//             })}
-//         </TextLoop>{" "}
-//         <TextLoop interval={900}>
-//           {collectiveNouns &&
-//             collectiveNouns.map((term, index) => {
-//               return <span>{collectiveNouns[getRandomIndex()]}</span>;
-//             })}
-//         </TextLoop>{" "}
-//         <TextLoop interval={1200}>
-//           {sentenceEnds &&
-//             sentenceEnds.map((term, index) => {
-//               return <span>{sentenceEnds[getRandomIndex()]}</span>;
-//             })}
-//         </TextLoop>{" "}
-//       </Example>
-//     </Section>
-//   </div>
-// );
-
 const Controlled = () => {
+  const [interation, setIteration] = useState(1);
+
   const [isLoaded, setIsLoaded] = useState(false);
   const [interval, setInterval] = useState(0);
   const [isDone, setIsDone] = useState(false);
   const [isExpired, setIsExpired] = useState(false);
-
+  const [relatedArticles, setRelatedArticles] = useState([]);
   // currently not getting sentence words randomly, going through by array order
   const getRandomIndex = () => Math.floor(Math.random() * 15);
 
@@ -165,6 +123,7 @@ const Controlled = () => {
   useEffect(() => {
     const intervalStopTimeout = setTimeout(() => {
       setInterval(0);
+      setIteration(0);
       setIsExpired(true);
     }, 15000);
 
@@ -172,6 +131,25 @@ const Controlled = () => {
       clearTimeout(intervalStopTimeout);
     };
   }, []);
+
+  useEffect(() => {
+    // look for articles from created headline,
+    // right now just based on noun
+    if (isDone || isExpired) {
+      const basicQuery =
+        document.getElementById("headline").children[1].textContent;
+
+      fetch(
+        `https://api.nytimes.com/svc/search/v2/articlesearch.json?q=${encodeURI(
+          basicQuery
+        )}&api-key=XwGASDofkYRU61tz4qzrlLgj2UZD14Wi`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          setRelatedArticles(data.response.docs);
+        });
+    }
+  }, [isDone, isExpired]);
 
   return (
     <Section
@@ -182,9 +160,9 @@ const Controlled = () => {
         setInterval(0);
       }}
     >
-      {!isLoaded && <p>OMG here he comes...</p>}
+      {!isLoaded && <h1>🗞</h1>}
       {isLoaded && (
-        <HeadlineGroup>
+        <HeadlineGroup id="headline">
           <TextLoop
             interval={interval}
             delay={!isDone ? 1000 : 0}
@@ -210,18 +188,30 @@ const Controlled = () => {
             <h3>✅ Headline chosen!</h3>
           </>
         )}
-      </div>
-      <div>
-        {Boolean(isExpired) && Boolean(!isDone) && (
-          <h3>🤷‍♂️ Times up! This is your headline.</h3>
-        )}
+        <div>
+          {Boolean(isExpired) && Boolean(!isDone) && (
+            <h3>🤷‍♂️ Times up! This is your headline.</h3>
+          )}
+        </div>
+        {(isDone || isExpired) && relatedArticles && <h3>Related Articles</h3>}
+        {(isDone || isExpired) &&
+          relatedArticles &&
+          relatedArticles.map((article) => {
+            return (
+              <p>
+                {" "}
+                <a target="_blank" href={article.web_url}>
+                  {article.headline.main}
+                </a>
+              </p>
+            );
+          })}
       </div>
     </Section>
   );
 };
 
 enum Sections {
-  Fast,
   Controlled,
 }
 
