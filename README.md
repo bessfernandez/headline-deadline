@@ -1,5 +1,7 @@
 # Headline Deadline
 
+## NOTE _Extremely_ Beta 
+
 Your boss sends an urgent Slack message to your team. We need a new viral story this afternoon! You have 20 seconds to come up with the best news headline possible and beat your teammates ideas for fame and fortune!
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
