@@ -12,6 +12,18 @@ Your boss sends an urgent Slack message to your team. We need a new viral story 
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Maybe next
+
+- Visible timer
+- Make clickable stuff more obvious/visible
+- Better intro
+- Fetching is very basic, make it a bit better and explore available APIs more
+- Fix for mobile
+- Keyboard shortcuts
+- Get leaderboard vote working/mocked via who knows - Socket io?
+- Allow clicking on individual words
+- Some better styling 
+
 ## Available Scripts
 
 In the project directory, you can run:
