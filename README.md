@@ -12,14 +12,25 @@ Your boss sends an urgent Slack message to your team. We need a new viral story 
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Done
+
+1. Show intro headline of headline deadline
+2. Basic React / UI
+3. Animation of headline
+4. Figure out parts of speech and get some sort of picking / randomizing going
+5. Events to click / timer / all that
+6. Fetch related articles from chosen article headline
+7. Mock out a leaderboard situation
+
 ## Maybe next
 
 - Visible timer
 - Make clickable stuff more obvious/visible
 - Better intro
-- Fetching is very basic, make it a bit better and explore available APIs more
-- Fix for mobile
-- Keyboard shortcuts
+- Make things fully randomized
+- Fetching is very basic and kinda busted, make it a bit better and explore available APIs more
+- Fix for mobile / see if breaking word to next line can be handled a bit better
+- Keyboard shortcuts / accessibility (maybe check box for show animation?)
 - Get leaderboard vote working/mocked via who knows - Socket io?
 - Allow clicking on individual words
 - Some better styling 
