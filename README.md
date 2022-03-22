@@ -7,7 +7,7 @@ Your boss sends an urgent Slack message to your team. We need a new viral story 
 1. Random headlines will twirl on by
 2. Pick one real quick
 3. If you don't one will be picked for you
-4. You will see any related articles from NYT public API
+4. You will see any related headlines/links from NYT public API 
 5. Can see headlines from co-workers and vote on them
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
